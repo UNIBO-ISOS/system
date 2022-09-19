@@ -1,0 +1,29 @@
+{
+  "name": "listener",
+  "version": "1.0.0",
+  "description": "",
+  "main": "listeners.js",
+  "scripts": {
+    "build": "rimraf dist && tsc",
+    "preserve": "npm run build",
+    "serve": "cross-env NODE_ENV=development concurrently \"tsc --watch\" \"nodemon -q dist/listener.js\"",
+    "prestart": "npm run build",
+    "start": "cross-env NODE_ENV=production node dist/listener.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.27.2",
+    "camunda-external-task-client-js": "^2.2.0",
+    "cross-env": "^7.0.3",
+    "dotenv": "^16.0.2",
+    "rimraf": "^3.0.2",
+    "typescript": "^4.8.3"
+  },
+  "devDependencies": {
+    "@types/camunda-external-task-client-js": "^1.3.3",
+    "concurrently": "^7.4.0",
+    "nodemon": "^2.0.20"
+  }
+}

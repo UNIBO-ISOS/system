@@ -1,0 +1,20 @@
+version: "2"
+services:
+  acmeat_backend:
+    container_name: acmeat_backend
+    build: .
+    ports:
+      - "5000:5000"
+    links:
+      - mongo_database
+  mongo_database:
+    container_name: mongo_database
+    image: mongo
+    environment:
+      - MONGO_INITDB_DATABASE=acmeat
+      - MONGO_INITDB_ROOT_USERNAME=stefano
+      - MONGO_INITDB_ROOT_PASSWORD=passwordpassword
+    volumes:
+      - ./data:/data/db
+    ports:
+      - "27017:27017"

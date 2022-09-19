@@ -1,0 +1,26 @@
+[
+    {
+        "_id": { "$oid": "62f6668ec28d1d9c5ccf326d" },
+        "name": "Rubiera",
+        "location": {
+            "type": "Point",
+            "coordinates": [44.6530, 10.7806]
+        }
+    },
+    {
+        "_id": { "$oid": "62f6669b31f01fef71221cc3" },
+        "name": "Reggio nell'Emilia",
+        "location": {
+            "type": "Point",
+            "coordinates": [44.6990, 10.6297]
+        }
+    },
+    {
+        "_id": { "$oid": "62f666aaeb58fbf770cfbf3c" },
+        "name": "Modena",
+        "location": {
+            "type": "Point",
+            "coordinates": [44.6471, 10.9252]
+        }
+    }
+]

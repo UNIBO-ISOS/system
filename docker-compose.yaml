@@ -1,0 +1,38 @@
+version: "2"
+services:
+  acmeat_backend:
+    container_name: acmeat_backend
+    build: ./acmeat-backend
+    ports:
+      - "5000:5000"
+    links:
+      - mongo_database
+      - bank
+  mongo_database:
+    container_name: mongo_database
+    image: mongo
+    environment:
+      - MONGO_INITDB_DATABASE=acmeat
+      - MONGO_INITDB_ROOT_USERNAME=stefano
+      - MONGO_INITDB_ROOT_PASSWORD=passwordpassword
+    volumes:
+      - ./acmeat-backend/data:/data/db
+    ports:
+      - "27017:27017"
+  bank:
+    container_name: bank
+    build: ./bank
+    ports:
+      - "8765:8765"
+  camunda:
+    container_name: camunda
+    image: camunda/camunda-bpm-platform:run-latest
+    ports:
+      - "8080:8080"
+  listener:
+    container_name: listener
+    build: ./listener
+    links:
+      - acmeat_backend
+      - bank
+      - camunda

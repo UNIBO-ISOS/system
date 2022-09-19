@@ -1,0 +1,65 @@
+[
+    {
+        "_id": { "$oid": "62fe5fb7321930aecba76d30" },
+        "username": "stefano",
+        "firstName": "Stefano",
+        "lastName": "Notari",
+        "role": "normal",
+        "password": "f23c4346c067e021d78eda814c9899c8b3774cfae9ed118b95acc0937a93c0cb9282851127c1d05fcea67432d9b4dc5e7c4502c259aebeafed347a346b7e16d9",
+        "salt": "cf29d5eb1cbf381d"
+    },
+    {
+        "_id": { "$oid": "62fe5fec321930aecba76d33" },
+        "username": "gio96",
+        "firstName": "Giorgia",
+        "lastName": "Corradini",
+        "role": "normal",
+        "password": "567dbb92cd607f767ea278f27766022c0602e65094b1538432f49626378e9e13e4fd66cd991d9bef859125bb199a2240416c0c602a7593405c56b030384534a0",
+        "salt": "e80ef4369b3a8761"
+    },
+    {
+        "_id": { "$oid": "62fe5ff5321930aecba76d35" },
+        "username": "admin",
+        "firstName": "Vincenzo",
+        "lastName": "Iazzetta",
+        "role": "admin",
+        "password": "8637f9df4436b6e40954814c1cd060a597af1e137140ca2529ad56de2173793d4d8473afd7b920087e95fa764342b2584e840ef6b8c0af6d624e030a0b12015c",
+        "salt": "e88d1fa758d9c040"
+    },
+    {
+        "_id": { "$oid": "62fe5ffc321930aecba76d37" },
+        "username": "crudoRubiera",
+        "firstName": "Stefani",
+        "lastName": "Fusani",
+        "role": "restaurant",
+        "password": "cea0cf62dea957cbf24c1568d27e0b4097fdec78b0e308335666460c21a8040d1b6871b5d727711f68640605e365186dbd99a7dca4620eb55f4d8da9f2a0c77b",
+        "salt": "3a267473f54229f9"
+    },
+    {
+        "_id": { "$oid": "62fe6004321930aecba76d39" },
+        "username": "kebabRubiera",
+        "firstName": "Kırgız",
+        "lastName": "Duran",
+        "role": "restaurant",
+        "password": "041f12cec1bfc05a964ad470b80cf2ccd4f8d490d15723f06c297b80954260115efba228a13cafbf5074ae13a80eabe13692275dd3c3d2e621656397ccd9e174",
+        "salt": "ddcd10a1532d8c3d"
+    },
+    {
+        "_id": { "$oid": "62fe600b321930aecba76d3b" },
+        "username": "Glovo",
+        "firstName": "Oscar",
+        "lastName": "Pierre",
+        "role": "courier",
+        "password": "4a278737aa2196dce4c612d0f6dce34e0c85f3dfe7e3e6b6ff8d99cb3043c775ac57e9ccb185b1d0ea3b1f83ea101f39da95bab3436e5ca5158a93fcf2f5c3d5",
+        "salt": "5fdfb30129588ab2"
+    },
+    {
+        "_id": { "$oid": "62fe6013321930aecba76d3d" },
+        "username": "JustEat",
+        "firstName": "Jesper",
+        "lastName": "Buch",
+        "role": "courier",
+        "password": "6ca0ddf743565b62c6bff28fa297473aa905de5315a98ae085ca006446202e0e4a58ef556cc78dcad6d3de68f49923ec3ef4912ad375b603e21932277c5ccb2f",
+        "salt": "5dfd7bbe914d858e"
+    }
+]

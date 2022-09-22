@@ -33,6 +33,7 @@ mongoose.connection.on('connected', () => {
     })
 })
 
+// todo: handle disconnection
 mongoose.connection.on('error', err => {
     console.log('db error: ', err)
 })

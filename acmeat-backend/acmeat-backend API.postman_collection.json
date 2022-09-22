@@ -1,0 +1,387 @@
+{
+	"info": {
+		"_postman_id": "4a187f0b-4adc-4536-ba59-ac68f4114893",
+		"name": "acmeat-backend API",
+		"description": "Applicazione per la consegna del cibo a domicilio. Permette agli utenti di selezionare il cibo da consegnare a domicilio tra i locali convenzionati. Il backend si occupa della gestione del pagamento e di seguire lo stato di un ordine.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "1590174"
+	},
+	"item": [
+		{
+			"name": "users",
+			"item": [
+				{
+					"name": "Users - GetAll",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/users/",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"users",
+								""
+							]
+						},
+						"description": "API per gli amministratori di sistema, permette di verificare gli account presenti nel database."
+					},
+					"response": []
+				},
+				{
+					"name": "Users - SignUp (normal)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"stefano\",\r\n    \"firstName\": \"Stefano\",\r\n    \"lastName\": \"Notari\",\r\n    \"password\": \"password\"\r\n}"
+						},
+						"url": {
+							"raw": "{{HOST}}/users/",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"users",
+								""
+							]
+						},
+						"description": "API per la registrazione degli utenti finali."
+					},
+					"response": []
+				},
+				{
+					"name": "Users - Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if(pm.response.code == 200) {\r",
+									"    let body = pm.response.json()\r",
+									"    if(body.token != undefined) {\r",
+									"        pm.environment.set(\"token\", body.token);\r",
+									"    }\r",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"stefano\",\r\n    \"password\": \"password\"\r\n}"
+						},
+						"url": {
+							"raw": "{{HOST}}/users/login",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"users",
+								"login"
+							]
+						},
+						"description": "APi per l'autenticazione di un utente (comune a tutti i ruoli)"
+					},
+					"response": []
+				}
+			],
+			"description": "Collezione di utenti distinti in:\n\n*   normal: utente finale che si iscrive per usufruire del servizio acme\n*   admin: amministratore del servizio\n*   restaurants: ristoranti che aderiscono al servizio acme\n*   delivery: società che aderiscono al servizio acme per consegnare cibo"
+		},
+		{
+			"name": "Cities",
+			"item": [
+				{
+					"name": "Cities - GetAll",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/cities/",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"cities",
+								""
+							]
+						},
+						"description": "Ritorna la lista di tutti i comuni in cui il servzio è attivo"
+					},
+					"response": []
+				}
+			],
+			"description": "Comuni nei quali è presente il servizio acme."
+		},
+		{
+			"name": "Restaurants",
+			"item": [
+				{
+					"name": "Restaurants - GetAll",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/restaurants/?cityId=62f6668ec28d1d9c5ccf326d&lat=44.655140&lng=10.778536",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"restaurants",
+								""
+							],
+							"query": [
+								{
+									"key": "cityId",
+									"value": "62f6668ec28d1d9c5ccf326d"
+								},
+								{
+									"key": "lat",
+									"value": "44.655140"
+								},
+								{
+									"key": "lng",
+									"value": "10.778536"
+								}
+							]
+						},
+						"description": "API che permette di ottenere la lista dei ristoranti aderenti al servizio acme (non necessita il login).\n\nI risultati possono essere filtrati/ ordinati con le seguenti query string:\n\n*   cityId: ritorna la lista dei ristoranti che appartengono a una certa città (necessario l'id della città)\n*   lat e lng: contengono le coordinate dalle quali ordinare i risultati (dal più vicino al più lontano)\n*   maxDistance e minDistance (necessitano delle query string lat e lng): permette di scegliere le distanze, in metri, entro le quali devono essere i ristornati (default minDistance 0 e default maxDistance 50000)"
+					},
+					"response": []
+				},
+				{
+					"name": "Restaurants - Update",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Istanbul Doner Kebab pizza 2\"\r\n}"
+						},
+						"url": {
+							"raw": "{{HOST}}/restaurants/{{restaurant_id}}/",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"restaurants",
+								"{{restaurant_id}}",
+								""
+							]
+						},
+						"description": "Permette ai proprietari di un ristorante di aggiornare i metadati, tuttavia questa operazione è consentita fino alle 10:00 del mattino."
+					},
+					"response": []
+				},
+				{
+					"name": "Restaurants - notifyUnavailability",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"date\": \"2022-08-21T16:38:53.811Z\",\r\n    \"motivation\": \"some description\"\r\n}"
+						},
+						"url": {
+							"raw": "{{HOST}}/restaurants/{{restaurant_id}}",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"restaurants",
+								"{{restaurant_id}}"
+							]
+						},
+						"description": "API che permette a un ristoratore di notificare la chiusura del proprio locale:\n\n*   se la chiusura è il giorno stesso, la notifica deve essere effettuata entro le 10 del mattino\n*   se la chiusura è un giorno futuro, non c'è vincolo d'orario"
+					},
+					"response": []
+				}
+			],
+			"description": "Collezione di ristoranti che aderiscono al servizio acme. Le seguenti API permettono di interrogare tale collezione e permette ai gestori dei ristoranti di aggiornare i metadati e di notificare chiusure."
+		},
+		{
+			"name": "Orders",
+			"item": [
+				{
+					"name": "Orders - Create new Order",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"items\": [\r\n        {\r\n            \"name\": \"Kebab\",\r\n            \"price\": 5.0,\r\n            \"qty\": 1  \r\n    }],\r\n    \"amount\": 65,\r\n    \"restaurantId\": \"6313700435882300b970035b\",\r\n    \"date\": \"2022-08-30T09:49:36.424Z\",\r\n    \"delivery\": \"2030\",\r\n    \"address\": {\r\n        \"street\": \"via salerno\",\r\n        \"number\": \"13\",\r\n        \"city\": \"Rubiera (RE)\",\r\n        \"location\": {\r\n            \"type\": \"Point\",\r\n            \"coordinates\": [44.655062, 10.773937]\r\n        }\r\n    }\r\n}"
+						},
+						"url": {
+							"raw": "{{HOST}}/orders",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"orders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Orders - notify payment",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"token\": \"mytoken\"\r\n}"
+						},
+						"url": {
+							"raw": "{{HOST}}/orders/630df5109985288c7a7d64a2/notifyPaymant",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"orders",
+								"630df5109985288c7a7d64a2",
+								"notifyPaymant"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "HOST",
+			"value": "http://localhost:5000",
+			"type": "string"
+		},
+		{
+			"key": "restaurant_id",
+			"value": "630b6e8e0e999a00d3a69973"
+		}
+	]
+}

@@ -1,7 +1,17 @@
 import { createClientAsync, Client } from 'soap';
 
+/**
+ * Allows the communication of the application 
+ * to the bank's service throgh SOAP
+ */
 class BankWrapper {
+    /**
+    * path to the wsdl file, it specify the methods implemented by the bank
+    */
     private wsdl: string = process.env.WSDL!;
+    /**
+     * session identification
+     */
     private sid: Promise<string>;
     private client: Promise<Client>;
 
@@ -10,6 +20,10 @@ class BankWrapper {
         this.sid = this.login()
     }
 
+    /**
+     * 
+     * @returns when the promise is completed it returns the value of the session
+     */
     private login() : Promise<string>{
         return new Promise((resolve, reject) => {
             this.client.then(async (client) => {
@@ -24,6 +38,13 @@ class BankWrapper {
         })
     }
 
+    /**
+     * checks if the transaction is paid
+     * @param token id of transaction
+     * @param amount the amount to check
+     * @returns a promise, if the request succeed a boolean 
+     * (true if paid, false otherwise) otherwise the error
+     */
     verifyTransaction(token: string, amount: number) {
         return new Promise((resolve, reject) => {
             this.client.then(async (client) => {
@@ -38,6 +59,12 @@ class BankWrapper {
         })
     }
 
+    /**
+     * refunds a user when the order is canceled
+     * @param token id of transaction
+     * @param to_user the user to refund
+     * @returns 
+     */
     refundTransaction(token: string, to_user: string) {
         return new Promise((resolve, reject) => {
             this.client.then(async (client) => {

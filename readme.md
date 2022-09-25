@@ -1,42 +1,43 @@
-# Progetto Ingegneria del Software Orientata ai Servizi
+# Ingegneria del Software Orientata ai Servizi Project
 
-Questo repository contiene i sorgenti del progetto di ISOS 2022.
+This repository contains the source code of the ISOS project 2022.
 
-## Prerequisiti
+## Prerequisites
 
-- aver installato [docker](https://www.docker.com/products/docker-desktop)
-    - su sistemi di tipo linux, si richiede l'installazione di [docker compose](https://docs.docker.com/compose/install/)
+- [docker](https://www.docker.com/products/docker-desktop)
+    - for the systems that uses linux as OS, it is necessary to install [docker compose](https://docs.docker.com/compose/install/)
 
-## Eseguire l'applicazione
+## Run the application
 
-Spostarsi nella directory principale contenente il file docker-compose (`./progetto`).
+Move to the directory that contains the docker-compose file (`./progetto/acmeat-backend`).
 
-* Digitare ed eseguire il seguente comando
+* run the following command
     ```
         docker-compose up
     ```
-* Per effettuare il rebuild dell'applicazione (necessario in caso di aggiornamento dei sorgenti) digitare e eseguire il comando
+* to rebuild the application (necessary when the source code is updated) run the following command
     ```
         docker-compose up --build
     ```
-    o
+    or
     ```
         docker-compose build
     ```
+* The application will be available at [http://localhost:5000](http://localhost)
 
-## Architettura
+## Architecture
 
-L'applicazione è composta dai seguenti servizi (container):
+The application is composed of the following services (container):
 
--  **acmeat_backend**: server REST che espone le API dell'azienda acmeat, per maggiori informazioni [clicca qui](/acmeat-backend/readme.md)
-- **mongo_database**: database non relazionale utilizzato da *acmeat_backend*, utilizzato per effettuare query geografiche ([GeoJSON](https://www.mongodb.com/docs/manual/reference/geojson/))
-- **bank**: server SOAP che simula un istituto bancario, gestisce i pagamenti e i bilanci degli utenti
+-  **acmeat_backend**: REST server that implements the APIs of ACMEat, for more information [click here](/acmeat-backend/readme.md)
+- **mongo_database**: no relational database (NoSQL) used by *acmeat_backend*, necessary to save data and make geospatial queries  ([GeoJSON](https://www.mongodb.com/docs/manual/reference/geojson/))
+- **bank**: SOAP server that simulate a bank, it handles the payments and the account balance of users
 
-    - per la persistenza utilizza *[SQLite](https://www.sqlite.org/index.html)*
+    - to save data it uses *[SQLite](https://www.sqlite.org/index.html)*
 
-- **camunda**: immagine ufficiale di camunda
-- **listener**: wrapper che dialoga con *camunda* e *acmeat_backend* per gestire la gestione delle human workflow
+- **camunda**: official image of camunda
+- **listener**: wrapper that dialogue with *camunda* and *acmeat_backend* to handle human workflow
 
-La seguente immagine rappresenta l'architettura appena descritta in maniera grafica, ogni nuvola rappresenta un servizio distinto e i principali componenti.
+The following image represents the architecture of the described application in a graphical way, each cloud represents a distinct service.
 
-![Architettura dell'applicazione](/application_architecture.png "Architettura")
+![Application's Architecture](/application_architecture.png "Architecture")

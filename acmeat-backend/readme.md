@@ -1,57 +1,57 @@
 # ACME backend
 
-Server REST che implementa le capabilities dell'azienda ACMEat.
-In particolare, permette agli utenti iscritti di ordinare cibo da asporto da uno dei ristoranti convenzionati.
-Per la consegna l'applicativo si occupa di selezionare l'azienda di delivery migliore in maniera automatica.
+REST server that implements the capabilities of ACMEat.
+In particular, it allows the users to order takeaway food from one of the affiliate restaurants.
+The delivery is handled automatically choosing the cheapest courier (affiliate with ACMEat).
 
-## Prerequisiti
+## Prerequisites
 
-- aver installato [docker](https://www.docker.com/products/docker-desktop)
-    - su sistemi di tipo linux, si richiede l'installazione di [docker compose](https://docs.docker.com/compose/install/)
-- si consiglia l'utilizzo di [postman](https://www.postman.com/downloads/) per poter usufruire della documentazione delle API
+- [docker](https://www.docker.com/products/docker-desktop)
+    - for the systems that uses linux as OS, it is necessary to install [docker compose](https://docs.docker.com/compose/install/)
+- it is advised to use [postman](https://www.postman.com/downloads/) in order to be able to use the documentation of the [API](/acmeat-backend/acmeat-backend%20API.postman_collection.json)
 
-## Documentazione
+## Documentation
 
-Il seguente [file](/acmeat-backend/acmeat-backend%20API.postman_collection.json) contiene la documentazione delle API implementate da ACMEat.
+The following [file](/acmeat-backend/acmeat-backend%20API.postman_collection.json) contains the documentation of the APIs implemented by ACMEat.
 
-## Architettura
+## Architecture
 
-L'applicazione è costituita dalle seguenti componenti:
+The application is composed of the following components:
 
-- *acmeat_backend*: implementa il server REST utilizzando la libreria [express](https://expressjs.com/)
+- *acmeat_backend*: implements the REST server using the [express](https://expressjs.com/) library
 
-    - *bankWrapper*: modulo che permette di comunicare con il servizio bancario, il dialogo è basato sul [file wsdl](/acmeat-backend//src//api/util/testWsdl.wsdl) condiviso con l'istituto bancario
+    - *bankWrapper*: module that allows to communicate with the bank's service, the dialogue is based on the [file wsdl](/acmeat-backend//src//api/util/testWsdl.wsdl) shared with the bank
 
-- *mongo*: database per la persistenza dei dati e per le query con coordinate geografiche
+- *mongo*: database for the saving of data and for the geospatial queries
 
-![Architettura dell'applicazione](/acmeat-backend/Architettura%20backend.png "Architettura")
+![Architecture of the application](/acmeat-backend/Architettura%20backend.png "Architecture")
 
-## Eseguire l'applicazione
+## Run the application
 
-Spostarsi nella directory contenente il file Docker-compose (`./progetto/acmeat-backend`).
+Move to the directory that contains the docker-compose file (`./progetto/acmeat-backend`).
 
-* Digitare ed eseguire il seguente comando
+* run the following command
     ```
         docker-compose up
     ```
-* Per effettuare il rebuild dell'applicazione (necessario in caso di aggiornamento dei sorgenti) digitare e eseguire il comando
+* to rebuild the application (necessary when the source code is updated) run the following command
     ```
         docker-compose up --build
     ```
-    o
+    or
     ```
         docker-compose build
     ```
-* L'applicazione sarà disponibile all'indirizzo [http://localhost:5000](http://localhost)
+* The application will be available at [http://localhost:5000](http://localhost)
 
-## Inizializzazione del database
+## Initialization of database
 
-Per evitare l'inserimento manuale di dati il database viene inizializzato con i dati attraverso il meccanismo di seeding.
-I dati inseriti sono:
+To avoid the manual inserting of the data in the database the data are automatically inserted with the seeding's mechanism.
+The inserted data are:
 
-- *user*: due utenti per ruolo, le credenziali di accesso sono disponibili [qui](/acmeat-backend/src/api/util/credentials.txt)
-- *city*: le città in cui il servizio è attivo
-- *restaurant*: i ristornati convenzionati con acme
-- *courier*: i corriri convenzionati con acme
+- *user*: two users for each role, the credentials of access are available [here](/acmeat-backend/src/api/util/credentials.txt)
+- *city*: the city where the service is active
+- *restaurant*: the restaurants affiliate with ACMEat
+- *courier*: the couriers affiliate with ACMEat
 
-I dati sono nella cartella `/acmeat-backend/src/api/mongo-data`
+The data are available in the following directory `/acmeat-backend/src/api/mongo-data`

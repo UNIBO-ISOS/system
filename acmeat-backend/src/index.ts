@@ -74,6 +74,7 @@ const io = new Server(server, {
       }
 });
 
+// set up socket authentication
 io.use(authenticate({
     secret: process.env.SECRET!
 }, (payload, done) => {
@@ -83,6 +84,7 @@ io.use(authenticate({
     return done(null, payload)
 }))
 
+// accept all peers that have been authenticated through JWT
 io.on('connection', (socket: any) => {
 
     console.log('peer authenticated!')
@@ -93,6 +95,7 @@ io.on('connection', (socket: any) => {
     })
 })
 
+// express, listen for new connections
 server.listen(port, () => {
     console.log(`Running on ${port} (ACMEat API)`);
 })

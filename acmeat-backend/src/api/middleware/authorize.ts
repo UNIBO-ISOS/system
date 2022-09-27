@@ -7,6 +7,11 @@ import { IGetUserAuthInfoRequest} from '../../enhanceTS/enhancedefinition'
 import { ReasonPhrases, StatusCodes } from 'http-status-codes';
 const secret = process.env.SECRET!;
 
+/**
+ * Allows access according to the user's role 
+ * @param roles which type of user can access to the endpoint, it can be specified as an array of string or a string
+ * @returns array of middleware that check the token and the user's role (according to role parameter)
+ */
 const authorize = (roles: string[] | string) => {
     if(typeof roles === 'string') {
         roles = [roles]
@@ -23,6 +28,13 @@ const authorize = (roles: string[] | string) => {
     ]
 }
 
+/**
+ * Allows access only to the resource's (restaurant) owner
+ * @param req Request
+ * @param res Response
+ * @param next Next middleware
+ * @returns 
+ */
 const checkOwnership = async (req: any, res: Response, next: any) => {
     const idToCheck = req.auth.user
     const restaurantId = req.params.restaurantId
@@ -38,6 +50,13 @@ const checkOwnership = async (req: any, res: Response, next: any) => {
     return next()
 }
 
+/**
+ * Allows access only to the resource's (order) owner
+ * @param req Request
+ * @param res Response
+ * @param next Next middleware
+ * @returns 
+ */
 const checkOrderOwnership = async (req: any, res: Response, next: any) => {
     const idToCheck = req.auth.user
     const orderId = req.params.orderId

@@ -7,7 +7,7 @@ import { IGetUserAuthInfoRequest} from '../../enhanceTS/enhancedefinition'
 import { ReasonPhrases, StatusCodes } from 'http-status-codes';
 const secret = process.env.SECRET!;
 
-const authorize = (roles: [string] | string) => {
+const authorize = (roles: string[] | string) => {
     if(typeof roles === 'string') {
         roles = [roles]
     }

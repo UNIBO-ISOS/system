@@ -1,6 +1,7 @@
 import { randomBytes, createHmac } from 'crypto';
 import { Request, Response } from 'express';
 import { ReasonPhrases, StatusCodes } from 'http-status-codes';
+import { Order } from '../components/order/order.model';
 
 
 const generateSalt = () => {
@@ -37,6 +38,32 @@ const checkDeadline = async (req: Request, res: Response, next: any) => {
     next()
 }
 
+const checkCancelOrderDeadline = async (req: Request, res: Response, next: any) => {
+    const requestReceivedTime = new Date(Date.now())
+    const timeReceived = requestReceivedTime.getHours() + "" + requestReceivedTime.getMinutes()
+    
+    
+    const orderId = req.params.orderId
+
+    let order = await Order.findById(orderId)
+    if(!order){
+        return res.status(StatusCodes.NOT_FOUND).json({ error: ReasonPhrases.NOT_FOUND })
+    }
+
+    const deliveryTime = order.deliveryTime
+    const timeRemaining = Number(deliveryTime) - Number(timeReceived)
+
+    //  check if there are more then 60 minutes since the deadline
+    if(timeRemaining > 60) {
+        //  todo: cancel order
+    }
+    else {
+        return res.status(StatusCodes.PRECONDITION_FAILED).json({ error: ReasonPhrases.PRECONDITION_FAILED})
+    }
+    
+    return next()
+}
+
 const checkUnavailability = async (req: Request, res: Response, next: any) => {
     const deadLineToday = new Date()
     deadLineToday.setHours(10, 0, 0, 0)
@@ -65,4 +92,4 @@ const checkUnavailability = async (req: Request, res: Response, next: any) => {
     return next()
 }
 
-export { generateSalt, hashPassword, checkDeadline, checkUnavailability }
+export { generateSalt, hashPassword, checkDeadline, checkUnavailability, checkCancelOrderDeadline }

@@ -8,8 +8,14 @@ enum restaurantStatus {
     ACCEPTED = 1
 }
 
-enum courierSearchStatus {
+enum courierStatus {
     FAILED = -1,
+    PENDING = 0,
+    COMPLETED = 1
+}
+
+enum orderStatus {
+    CANCELED = -1,
     PENDING = 0,
     COMPLETED = 1
 }
@@ -41,7 +47,8 @@ interface IOrder {
     transactionId: String,
     address: IAddress,
     restaurantStatus: restaurantStatus,
-    courierSearchStatus: courierSearchStatus
+    courierStatus: courierStatus,
+    status: orderStatus
 }
 
 const itemSchema = new Schema<IItem>({
@@ -82,9 +89,10 @@ const orderSchema = new Schema<IOrder>({
     transactionId: { type: String, required: true },
     address: addressSchema,
     restaurantStatus: { required: true, type: Number, enum: restaurantStatus },
-    courierSearchStatus: { required: true, type: Number, enum: courierSearchStatus }
+    courierStatus: { required: true, type: Number, enum: courierStatus },
+    status: { required: true, type: Number, enum: orderStatus }
 });
 
 const Order = model<IOrder>('order', orderSchema, 'order');
 
-export { Order, restaurantStatus, courierSearchStatus, IAddress, IItem }
+export { Order, restaurantStatus, courierStatus, orderStatus, IAddress, IItem }

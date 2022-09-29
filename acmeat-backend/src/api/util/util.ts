@@ -3,7 +3,6 @@ import { Request, Response } from 'express';
 import { ReasonPhrases, StatusCodes } from 'http-status-codes';
 import { Order } from '../components/order/order.model';
 
-
 const generateSalt = () => {
     const length = parseInt(process.env.LENGTH_SALT!);
 
@@ -42,7 +41,6 @@ const checkCancelOrderDeadline = async (req: Request, res: Response, next: any) 
     const requestReceivedTime = new Date(Date.now())
     const timeReceived = requestReceivedTime.getHours() + "" + requestReceivedTime.getMinutes()
     
-    
     const orderId = req.params.orderId
 
     let order = await Order.findById(orderId)
@@ -53,12 +51,10 @@ const checkCancelOrderDeadline = async (req: Request, res: Response, next: any) 
     const deliveryTime = order.deliveryTime
     const timeRemaining = Number(deliveryTime) - Number(timeReceived)
 
-    //  check if there are more then 60 minutes since the deadline
-    if(timeRemaining > 60) {
-        //  todo: cancel order
-    }
-    else {
-        return res.status(StatusCodes.PRECONDITION_FAILED).json({ error: ReasonPhrases.PRECONDITION_FAILED})
+    //  check if there are more then 60 minutes since the deadline 
+    //  100 units stands for 1 entire hour
+    if(timeRemaining <= 100) {
+        return res.status(StatusCodes.NOT_ACCEPTABLE).json({ error: ReasonPhrases.NOT_ACCEPTABLE, reason: 'You passed the 1hour deadline'})
     }
     
     return next()

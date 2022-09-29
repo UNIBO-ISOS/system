@@ -18,11 +18,12 @@ const createNewOrder = async (req: any, res: Response, next: any) => {
         orderRequest.userId = new Types.ObjectId(req.auth.user)
         orderRequest.transactionId = 'NOT PAID'
         orderRequest.restaurantStatus = restaurantStatus.PENDING
-        orderRequest.courierSearchStatus = courierStatus.PENDING
+        orderRequest.courierStatus = courierStatus.PENDING
         orderRequest.date = (new Date(Date.now())).toISOString()
+        orderRequest.status = orderStatus.PENDING
 
-        const orderToSave = new Order(orderRequest)
-        orderToSave.save()
+        let orderToSave = new Order(orderRequest)
+        orderToSave = await orderToSave.save()
 
         // notify restaurant
         const restaurant = await Restaurant.findById(orderToSave.restaurantId.toString())
@@ -156,15 +157,22 @@ const cancelOrder = async (req: any, res: Response, next: any) => {
 
         const doc = await order.save()
 
-        const restaurant = await Restaurant.findById(order.restaurantId.toString())
-        const courier = await Courier.findById(order.courier.toString())
+        console.log('\n')
 
-        if (!restaurant || !courier) {
+        const restaurant = await Restaurant.findById(order.restaurantId.toString())
+
+        if (!restaurant) {
             return res.status(StatusCodes.NOT_FOUND).json({ error: ReasonPhrases.NOT_FOUND })
         }
+        
+        if(order.courier){
+            const courier = await Courier.findById(order.courier.toString())
+
+            wrapper.emit([courier!.user.toString()], process.env.CANCEL_ORDER_NOTIFICATION!, { orderId: orderId })
+        }
+
         wrapper.emit([order.userId.toString()], process.env.CANCEL_ORDER_NOTIFICATION!, { orderId: orderId })
         wrapper.emit([restaurant.user.toString()], process.env.CANCEL_ORDER_NOTIFICATION!, { orderId: orderId })
-        wrapper.emit([courier.user.toString()], process.env.CANCEL_ORDER_NOTIFICATION!, { orderId: orderId })
 
         return res.status(StatusCodes.ACCEPTED).json({ id: doc._id })
     } catch (err) {

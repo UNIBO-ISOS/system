@@ -32,6 +32,8 @@ services:
   listener:
     container_name: listener
     build: ./listener
+    ports:
+      - "7070:7070"
     links:
       - acmeat_backend
       - bank

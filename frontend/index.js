@@ -21,9 +21,8 @@ function login(){
 }
 
 $(document).ready(() => {
-    $("#login_btn").on("click", login())
+    $("#login_btn").on("click", login)
     $("#psw").on("keyup", (e) => {
-
         if(e.key == "Enter"){
             login()
         }

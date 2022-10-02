@@ -1,23 +1,31 @@
+const url = "/api"
+
+function login(){
+    const username = $("#uname").val()
+    const password = $("#psw").val()
+
+    $.ajax({
+    url: url + "/users/login",
+    type: "post",
+    data: {
+        username: username,
+        password: password
+    },
+    success: (response) => {
+        console.log(response)
+    },
+    error: (jqxhr, status, error) => {
+        console.log(error)
+    }
+})
+}
+
 $(document).ready(() => {
-    const url = "/api"
+    $("#login_btn").on("click", login())
+    $("#psw").on("keyup", (e) => {
 
-    $("#login_btn").on("click", () => {
-        const username = $("#uname").val()
-        const password = $("#psw").val()
-
-        $.ajax({
-            url: url + "/users/login",
-            type: "post",
-            data: {
-                username: username,
-                password: password
-            },
-            success: (response) => {
-                console.log(response)
-            },
-            error: (jqxhr, status, error) => {
-                console.log(error)
-            }
-        })
+        if(e.key == "Enter"){
+            login()
+        }
     })
 })

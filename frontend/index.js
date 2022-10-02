@@ -1,5 +1,5 @@
 $(document).ready(() => {
-    const url = "http://acmeat_backend:5000"
+    const url = "/api"
 
     $("#login_btn").on("click", () => {
         const username = $("#uname").val()

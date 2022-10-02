@@ -30,10 +30,10 @@ app.use(helmet());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded( { extended: true } ));
 app.use(cors({
-    origin: "*"
+    origin: "http://localhost"
 }))
 
-app.use(api);
+app.use('/api', api);
 
 const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
 

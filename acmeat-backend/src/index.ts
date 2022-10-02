@@ -3,6 +3,7 @@ import { StatusCodes, ReasonPhrases } from 'http-status-codes';
 import bodyParser from 'body-parser';
 import helmet from 'helmet';
 import dotenv from 'dotenv';
+import cors from 'cors';
 
 // socket.io
 import http from 'http';
@@ -12,7 +13,6 @@ import { wrapper } from './api/util/socketWrapper';
 import { roles } from './api/middleware/role';
 
 // load environment
-
 dotenv.config();
 
 import util from 'util';
@@ -29,6 +29,9 @@ const app: Express = express();
 app.use(helmet());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded( { extended: true } ));
+app.use(cors({
+    origin: "*"
+}))
 
 app.use(api);
 

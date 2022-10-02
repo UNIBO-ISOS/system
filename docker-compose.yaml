@@ -5,6 +5,8 @@ services:
     build: ./acmeat-backend
     ports:
       - "5000:5000"
+    depends_on:
+      - bank
     links:
       - mongo_database
       - bank
@@ -38,3 +40,10 @@ services:
       - acmeat_backend
       - bank
       - camunda
+  frontend:
+    container_name: client_frontend
+    build: ./frontend
+    ports:
+      - "80:7770"
+    links: 
+      - acmeat_backend

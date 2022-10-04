@@ -13,6 +13,11 @@ function login(){
     },
     success: (response) => {
         console.log(response)
+        const token = response.token
+        const businessKey = "bk_" + Date.now()
+        localStorage.setItem('token', token)
+        localStorage.setItem('bk', businessKey)
+        window.location.href = '/cities.html'
     },
     error: (jqxhr, status, error) => {
         console.log(error)

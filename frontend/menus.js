@@ -7,14 +7,29 @@ $(document).ready(() => {
 		}
 		$.get(url, (data) => {
 			$("#menu").remove();
-			$("#content").append('<ul id="menu"></ul>');
-			const ul = $("#menu");
+			$("#content").append('<div id="menu" class="row"></div>');
+			const row = $("#menu");
 			
 			for (const item of data.restaurant.menu) {
-				ul.append("<li id='" + item._id + "' > " + item.name + "</li>");
+				let li = ``
+				for(const itemMenu of item.items) {
+					li = li.concat(`<li class="list-group-item">Name: ${itemMenu.name} (${item.categories[itemMenu.category[0]]})</li>`)
+				}
+				const ul = `<ul class="list-group list-group-flush">${li}</ul>`
+				row.append(`
+					<div class="col-sm-6" id="menu">
+						<div class="card" id="${item._id}">
+							<div class="card-body">
+								<h5 class="card-title">${item.name}</h5>
+								<p class="card-text">${item.desc}</p>
+							</div>
+							${ul}
+						</div>
+					</div>
+				`)
 			}
             
-			$("#menu li").on("click", (event) => {
+			$("#menu .card").on("click", (event) => {
 				const target = event.target;
 				const id = $(target).attr("id");
 				console.log(id);

@@ -3,7 +3,7 @@ $(document).ready(() => {
         let url = "/api/restaurants";
         const city_id = localStorage.getItem("city_id")
 		if (search) {
-			url = url + "/?search=" + search;
+			url = url + "/?search=" + search + "&cityId=" + city_id;
 		}
 		$.get(url, (data) => {
 			$("#restaurants").remove();
@@ -11,10 +11,7 @@ $(document).ready(() => {
 			const ul = $("#restaurants");
 
 			for (const item of data.restaurants) {
-				if(item.city._id == city_id)
-                {
-                    ul.append("<li id='" + item._id + "' > " + item.name + "</li>");
-                }
+                ul.append("<li id='" + item._id + "' > " + item.name + "</li>");
 			}
 			$("#restaurants li").on("click", (event) => {
 				const target = event.target;

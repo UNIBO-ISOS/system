@@ -23,6 +23,10 @@ const getAllRestaurants = async (req: Request, res: Response, next: any) => {
             query.city = new Types.ObjectId(cityId)
         }
 
+        if(req.query.search) {
+            query.name = new RegExp(req.query.search.toString(), 'i')
+        }
+
         if(req.query.lat && req.query.lng) {
             query.location = {
                 $near: {

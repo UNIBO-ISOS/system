@@ -25,7 +25,6 @@ const createNewOrder = async (req: any, res: Response, next: any) => {
         let orderToSave = new Order(orderRequest)
         orderToSave = await orderToSave.save()
 
-        // notify restaurant
         const restaurant = await Restaurant.findById(orderToSave.restaurantId.toString())
         if (!restaurant) {
             return res.status(StatusCodes.NOT_FOUND).json({ error: ReasonPhrases.NOT_FOUND })
@@ -54,6 +53,10 @@ const createNewOrder = async (req: any, res: Response, next: any) => {
                 orderId: orderToSave._id
             }).sort({ "amount": 1 })
 
+            if(!confirmedDeliveries || confirmedDeliveries.length == 0) {
+                return res.status(StatusCodes.NOT_FOUND).json({ error: 'no application' })
+            }
+
             const bestOfDeliveries = confirmedDeliveries[0];
 
             let successMsg = {
@@ -67,10 +70,13 @@ const createNewOrder = async (req: any, res: Response, next: any) => {
             }
 
             wrapper.emit([userCourier.user.toString()], process.env.WON_COURIER_AUCTION!, successMsg)
+
+            return res.status(StatusCodes.CREATED).json({ id: orderToSave._id })
+
         })
         let timer = new Timer(orderToSave._id.toString())
 
-        return res.status(StatusCodes.CREATED).json({ id: orderToSave._id })
+        //return res.status(StatusCodes.CREATED).json({ id: orderToSave._id })
     } catch (err) {
         return next(err)
     }

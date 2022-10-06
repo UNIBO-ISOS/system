@@ -1,6 +1,6 @@
 
 import { GeoJsonTypes } from 'geojson';
-import { Schema, model, ObjectId, Date } from 'mongoose';
+import { Schema, model, ObjectId, Date, Types } from 'mongoose';
 
 enum restaurantStatus {
     REJECTED = -1,
@@ -21,8 +21,7 @@ enum orderStatus {
 }
 
 interface IItem {
-    name: String,
-    price: number,
+    menuId: String,
     qty: number
 }
 
@@ -52,8 +51,7 @@ interface IOrder {
 }
 
 const itemSchema = new Schema<IItem>({
-    name: { type: String, required: true },
-    price: { type: Number, required: true },
+    menuId: { type: Schema.Types.ObjectId, required: true },
     qty: { type: Number, required: true }
 });
 

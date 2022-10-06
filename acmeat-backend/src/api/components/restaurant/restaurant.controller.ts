@@ -79,4 +79,21 @@ const notifyUnavailability = async (req: Request, res: Response, next: any) => {
     }
 }
 
-export { getAllRestaurants, updateRestaurants, notifyUnavailability }
+const getRestaurant = async (req: Request, res: Response, next: any) => {
+    try {
+        const restaurantId = req.params.restaurantId
+
+        const resturant = await Restaurant.findById(restaurantId)
+
+        if(!resturant) {
+            return res.status(StatusCodes.OK).json({ error: ReasonPhrases.NOT_FOUND})
+        }
+
+        return res.status(StatusCodes.OK).json({ resturant: resturant })
+
+    } catch (err) {
+        return next(err)
+    }
+}
+
+export { getAllRestaurants, updateRestaurants, notifyUnavailability, getRestaurant }

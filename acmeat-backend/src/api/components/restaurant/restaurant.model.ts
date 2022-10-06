@@ -23,10 +23,10 @@ interface IRestaurant {
         {
             name: String,
             desc: String,
+            price: number,
             items: [
                 {
                     name: String,
-                    price: number,
                     category: number
                 }
             ],

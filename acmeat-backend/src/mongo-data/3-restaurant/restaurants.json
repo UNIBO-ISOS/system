@@ -63,22 +63,21 @@
                 "_id": { "$oid": "630b6dc0711c25088d9cac1d" },
                 "name": "Open sushi",
                 "desc": "some description",
+                "price": 15.00,
                 "items": [
                     {
                         "_id": { "$oid": "630b6ded4fe85a2dd1b76896" },
                         "name": "Tiger Roll",
-                        "price": 15.00,
                         "category": 0
                     },
                     {
                         "_id": { "$oid": "630b6e02d3b8e4fb83a221db" },
                         "name": "Tiger Roll Spicy",
-                        "price": 15.00,
                         "category": 0
                     }
                 ],
                 "categories": [
-                    "Degustazione tiger roll"
+                    "Food"
                 ]
             }
         ]
@@ -140,22 +139,22 @@
                 "_id": { "$oid": "630b6e1709018304315e5296" },
                 "name": "Kebab",
                 "desc": "some description",
+                "price": 5.00,
                 "items": [
                     {
                         "_id": { "$oid": "630b6e22f024ca0ad6dd9c8b" },
                         "name": "Kebab",
-                        "price": 5.00,
                         "category": 0
                     },
                     {
                         "_id": { "$oid": "630b6e2ea3b7024603473517" },
-                        "name": "Spicy Kebab",
-                        "price": 7.00,
-                        "category": 0
+                        "name": "Pepsi",
+                        "category": 1
                     }
                 ],
                 "categories": [
-                    "Kebab"
+                    "Food",
+                    "Drink"
                 ]
             }
         ]

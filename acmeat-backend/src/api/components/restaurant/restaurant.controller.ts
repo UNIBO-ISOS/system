@@ -83,13 +83,13 @@ const getRestaurant = async (req: Request, res: Response, next: any) => {
     try {
         const restaurantId = req.params.restaurantId
 
-        const resturant = await Restaurant.findById(restaurantId)
+        const restaurant = await Restaurant.findById(restaurantId)
 
-        if(!resturant) {
+        if(!restaurant) {
             return res.status(StatusCodes.OK).json({ error: ReasonPhrases.NOT_FOUND})
         }
 
-        return res.status(StatusCodes.OK).json({ resturant: resturant })
+        return res.status(StatusCodes.OK).json({ restaurant: restaurant })
 
     } catch (err) {
         return next(err)

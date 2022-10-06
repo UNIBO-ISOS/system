@@ -15,14 +15,15 @@ $(document).ready(() => {
                 {
                     ul.append("<li id='" + item._id + "' > " + item.name + "</li>");
                 }
-				//console.log(item.city._id);
 			}
 			$("#restaurants li").on("click", (event) => {
 				const target = event.target;
 				const id = $(target).attr("id");
 				console.log(id);
-				// todo show menus
-			});
+
+				localStorage.setItem("restaurant_id", id);
+				window.location.href = "/menus.html";
+            });
 		});
 	};
 	$("#filter").on("keyup", (event) => {

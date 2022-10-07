@@ -80,6 +80,28 @@
                 "categories": [
                     "Food"
                 ]
+            },
+            {
+                "_id": { "$oid": "6340448a613f8a91e95b93aa" },
+                "name": "Close sushi",
+                "desc": "some specific description",
+                "price": 15.00,
+                "items": [
+                    {
+                        "_id": { "$oid": "634044a672b13d969a127316" },
+                        "name": "Leon Roll",
+                        "category": 0
+                    },
+                    {
+                        "_id": { "$oid": "634044e0dd9791cfba709386" },
+                        "name": "Water",
+                        "category": 1
+                    }
+                ],
+                "categories": [
+                    "Food",
+                    "Drink"
+                ]
             }
         ]
     },

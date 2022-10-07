@@ -3,6 +3,14 @@
      border: 3px solid #f1f1f1;
  }
 
+ .recap {
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+    justify-content: center;
+    align-items: center;
+ }
+
  /* Full-width inputs */
  input[type=text],
  input[type=password] {
@@ -122,3 +130,7 @@
       color: red;
       cursor: pointer;
   }
+
+.card{
+    margin: 2rem;
+}

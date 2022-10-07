@@ -12,7 +12,8 @@ dotenv.config()
 // configuration for the Client:
 //  - 'baseUrl': url to the Process Engine
 //  - 'logger': utility to automatically log important events
-const config = { baseUrl: process.env.CAMUNDA_PLATFORM!, use: logger };
+//  - 'interval': interval of time to wait before make a new poll (in ms)
+const config = { baseUrl: process.env.CAMUNDA_PLATFORM!, use: logger, interval: parseInt(process.env.POLL_INTERVAL!) };
 
 // create a Client instance with custom configuration
 const client = new Client(config);

@@ -24,16 +24,38 @@ $(document).ready(() => {
 								<p class="card-text">${item.desc}</p>
 							</div>
 							${ul}
+							<div class="card-footer">
+								<div class="input-group col-xs-2">
+									<div class="input-group-prepend">
+										<button type="button" class="btn btn-default btn-number remove">
+											<i class="bi bi-dash"></i>
+										</button>
+									</div>
+									<input type="number" class="form-control" placeholder="Quantity" min="0" value="0"></input>
+									<div class="input-group-append">
+										<button type="button" class="btn btn-default btn-number add">
+											<i class="bi bi-plus"></i>
+										</button>
+									</div>
+								</div>
+							</div>
 						</div>
 					</div>
 				`)
+				console.log(item._id)
+				$(`#${item._id} .card-footer .remove`).on('click', (event) => {
+					const newValue = parseInt($(`#${item._id} input`).val()) - 1
+					if(newValue >= 1) {
+						$(`#${item._id} input`).val(newValue.toString())
+					}
+				})
+
+				$(`#${item._id} .card-footer .add`).on('click', (event) => {
+					const newValue = parseInt($(`#${item._id} input`).val()) + 1
+					$(`#${item._id} input`).val(newValue.toString())
+				})
+
 			}
-            
-			$("#menu .card").on("click", (event) => {
-				const target = event.target;
-				const id = $(target).attr("id");
-				console.log(id);
-			});
 		});
 	};
 	$("#filter").on("keyup", (event) => {

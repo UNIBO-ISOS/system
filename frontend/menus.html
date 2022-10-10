@@ -16,11 +16,75 @@
         </div>
         <div id="contents" class="menus row">
             <div class="col-sm-4"></div>
-            <div id="recap" class="col-sm-4 recap">
-            </div> 
+            <div id="recap" class="col-sm-4 recap"></div>
         </div>
-
         <script src="https://code.jquery.com/jquery-3.6.1.min.js" integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>   
         <script src="menus.js"></script>
     </body>
+    <div class="modal" id="test">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+          <div class="modal-header">
+            <h4 class="modal-title">Checkout</h4>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+
+          <div class="modal-body">
+            <div class="form-group">
+              <div class="form-row">
+                <div class="form-group col-md-12">
+                  <label for="deliveryTime">Delivery</label>
+                  <select class="form-control" id="deliveryTime">
+                    <option selected>Choose the delivery</option>
+                    <option>1200</option>
+                    <option>1215</option>
+                    <option>1230</option>
+                    <option>1245</option>
+                    <option>1300</option>
+                    <option>1300</option>
+                    <option>1315</option>
+                    <option>1330</option>
+                    <option>1345</option>
+                    <option>1400</option>
+                    <option>1900</option>
+                    <option>1915</option>
+                    <option>1930</option>
+                    <option>1945</option>
+                    <option>2000</option>
+                    <option>2015</option>
+                    <option>2030</option>
+                    <option>2045</option>
+                    <option>2100</option>
+                  </select>
+                </div>
+                <div class="form-group col-md-6">
+                  <label for="street">Address</label>
+                  <input type="text" class="form-control" id="street" placeholder="Via Salerno">
+                </div>
+                <div class="form-group col-md-2">
+                  <label for="number">Number</label>
+                  <input type="number" class="form-control" id="number" placeholder="15">
+                </div>
+                <div class="form-group col-md-4">
+                  <label for="city">City</label>
+                  <input type="text" class="form-control" id="city" placeholder="Modena">
+                </div>
+                <div class="form-group col-md-6">
+                  <label for="latitude">latitude</label>
+                  <input type="number" class="form-control" id="latitude" step="0.01">
+                </div>
+                <div class="form-group col-md-6">
+                  <label for="longitude">longitude</label>
+                  <input type="number" class="form-control" id="longitude" step="0.01">
+                </div>
+              </div>
+            </div>
+          </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-success" data-bs-dismiss="modal" id="continue">Continue to the payment</button>
+        </div>
+      </div>
+    </div>
 </html>

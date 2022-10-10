@@ -1,6 +1,7 @@
 $(document).ready(() => {
 	const loadContent = (search) => {
 		const restaurant_id = localStorage.getItem("restaurant_id");
+		const token = localStorage.getItem("token");
 		let url = "/api/restaurants/" + restaurant_id;
 
 		let order = {
@@ -12,6 +13,43 @@ $(document).ready(() => {
             address
             */
 		};
+
+		const sendOrder = () => {
+			$.ajax({
+				type: 'POST',
+				url: '/api/orders/',
+				data: JSON.stringify(order),
+				dataType: 'json',
+				contentType: "application/json",
+				beforeSend: (req) => {
+					req.setRequestHeader('Authorization', 'Bearer ' + token)
+				},
+				success: (data) => {
+					console.log(data)
+					//todo save order id (versione di Pizzo) e passare alla visualizzazione dello stato ordine e pagamento 
+				},
+				error: (jqxhr, status, error) => {
+					console.log(error)
+				}
+			})
+		}
+
+		const getTotal = () => {
+			$('#checkoutButton').attr('disabled', true)
+			const list = $(`#recap .card .card-body ul li`)
+			let total = 0
+			order.items = []
+			for(const item of list) {
+				$('#checkoutButton').attr('disabled', false)
+				total = total + parseFloat($(`#recap .card .card-body ul #${item.id} #total`).text())
+				order.items.push({
+					menuId: item.id,
+					qty: parseInt($(`#recap .card .card-body ul #${item.id} #qty`).text())
+				})
+			}
+			order.amount = total
+			return total
+		}
 
 		if (search) {
 			url = url + "/?search=" + search;
@@ -55,25 +93,29 @@ $(document).ready(() => {
                         </div>
 					</div>
 				`);
-				console.log(item._id);
+				
 				$(`#${item._id} .card-footer .remove`).on("click", (event) => {
-					const newValue =
-						parseInt($(`#${item._id} input`).val()) - 1;
-					if (newValue >= 1) {
-						$(`#${item._id} input`).val(newValue.toString());
+					// remove old menu's entry
+					$(`#recap .card .card-body ul #${item._id}`).remove()
+					const qty = parseInt($(`#${item._id} input`).val()) - 1;
+					const menuValue = qty * item.price
+					if(qty > 0)
+						$("#recap .card .card-body ul").append(`<li id="${item._id}"><span id="qty">${qty}</span> x ${item.price} - ${item.name} <span id="total">${menuValue}</span></li>`)
+					$("#recap .card .card-footer span").text(`${getTotal()}`)
+					if (qty >= 0) {
+						$(`#${item._id} input`).val(qty.toString());
 					}
 				});
 
 				$(`#${item._id} .card-footer .add`).on("click", (event) => {
-					const newValue =
-						parseInt($(`#${item._id} input`).val()) + 1;
-					$(`#${item._id} input`).val(newValue.toString());
+					// remove old menu's entry
+					$(`#recap .card .card-body ul #${item._id}`).remove()
+					const qty = parseInt($(`#${item._id} input`).val()) + 1;
+					const menuValue = qty * item.price
+					$("#recap .card .card-body ul").append(`<li id="${item._id}"><span id="qty">${qty}</span> x ${item.price} - ${item.name} <span id="total">${menuValue}</span></li>`)
+					$("#recap .card .card-footer span").text(`${getTotal()}`)
+					$(`#${item._id} input`).val(qty.toString());
 				});
-
-				//  todo: aggiungere layout recap
-				//  todo: modificare funzioni di add e remove per gestire il recap
-				//  todo: modificare oggeto order dinamicamente per ottere dettagli ordine
-				//  todo: redirect pagina di checkout contenente i dettagli ordine
 			}
 
 			$("#recap").append(
@@ -83,18 +125,41 @@ $(document).ready(() => {
                         <h5 class="card-title">Order Details</h5>
                     </div>
                     <div class="card-body">
-                        <p class="card-text">
-                            // todo: dettagli ordine
-                        </p>
+                        <ul class="card-text">
+                        </ul>
                     </div>
                     <div class="card-footer">
-                        <button type="button" class="btn btn-default btn-number add">
-                            <i class="bi bi-plus"></i>
-                        </button>
+						<h5>Total <span>0</span></h5>
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#test" id="checkoutButton" disabled>Checkout</button>
                     </div>
                 </div>
                 `
 			);
+
+			$("#continue").on('click', (event) => {
+				const delivery = $('#deliveryTime').val()
+				const street = $('#street').val()
+				const number = parseInt($('#number').val())
+				const city = $('#city').val()
+				const lat = parseFloat($('#latitude').val())
+				const lng = parseFloat($('#longitude').val())
+				if(!delivery || !street || !number || !city || !lat || !lng) {
+					alert('Attention, missing field!')
+					return
+				}
+				order.deliveryTime = delivery
+				order.address = {
+					street: street,
+					number: number,
+					city: city,
+					location: {
+						type: "Point",
+						coordinates: [lat, lng]
+					}
+				}
+				sendOrder()
+				console.log(order)
+			})
 		});
 	};
 	$("#filter").on("keyup", (event) => {

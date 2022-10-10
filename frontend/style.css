@@ -134,3 +134,11 @@
 .card{
     margin: 2rem;
 }
+
+div.modal-backdrop.show {
+    z-index: 0;
+}
+
+.input-group .btn {
+    z-index: 0 !important;
+}

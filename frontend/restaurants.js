@@ -1,7 +1,7 @@
 $(document).ready(() => {
-    const loadContent = (search) => {
-        let url = "/api/restaurants";
-        const city_id = localStorage.getItem("city_id")
+	const loadContent = (search) => {
+		let url = "/api/restaurants";
+		const city_id = localStorage.getItem("city_id");
 		if (search) {
 			url = url + "/?search=" + search + "&cityId=" + city_id;
 		}
@@ -11,7 +11,7 @@ $(document).ready(() => {
 			const ul = $("#restaurants");
 
 			for (const item of data.restaurants) {
-                ul.append("<li id='" + item._id + "' > " + item.name + "</li>");
+				ul.append("<li id='" + item._id + "' > " + item.name + "</li>");
 			}
 			$("#restaurants li").on("click", (event) => {
 				const target = event.target;
@@ -20,7 +20,7 @@ $(document).ready(() => {
 
 				localStorage.setItem("restaurant_id", id);
 				window.location.href = "/menus.html";
-            });
+			});
 		});
 	};
 	$("#filter").on("keyup", (event) => {

@@ -27,7 +27,7 @@ app.use(helmet())
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 
-app.use(MainRouter)
+app.use('/apilistener', MainRouter)
 
 app.listen(port, () => {
     console.log(`Running on ${port} (LISTENER API)`);

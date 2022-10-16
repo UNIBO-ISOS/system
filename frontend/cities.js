@@ -1,10 +1,13 @@
 $(document).ready(() => {
 	const loadContent = (search) => {
-		let url = "/api/cities";
+		let url = "/apilistener/cities";
 		if (search) {
 			url = url + "/?search=" + search;
 		}
-		$.get(url, (data) => {
+		$.get(url, (data, status, xhr) => {
+			const bk = xhr.getResponseHeader("businessKey")
+			localStorage.setItem("bk", bk);
+
 			$("#cities").remove();
 			$("#content").append('<ul id="cities"></ul>');
 			const ul = $("#cities");

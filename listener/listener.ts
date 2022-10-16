@@ -1,10 +1,10 @@
-import { Client, logger } from 'camunda-external-task-client-js'
-import dotenv from 'dotenv'
-import { init } from './components/init_subscribe'
-import express, { Express } from 'express'
-import helmet from 'helmet'
-import bodyParser from 'body-parser'
-import { router as API } from './api/index'
+import bodyParser from 'body-parser';
+import { Client, logger } from 'camunda-external-task-client-js';
+import dotenv from 'dotenv';
+import express from 'express';
+import helmet from 'helmet';
+import { MainRouter } from './api/router';
+import { init } from './components/init_subscribe';
 
 // load environment
 dotenv.config()
@@ -21,16 +21,16 @@ const client = new Client(config);
 init()
 
 const port = process.env.PORT!
-const app: Express = express()
+const app = express()
 
 app.use(helmet())
 app.use(bodyParser.json())
-app.use(bodyParser.urlencoded( { extended: true }))
+app.use(bodyParser.urlencoded({ extended: true }))
 
-app.use(API)
+app.use(MainRouter)
 
 app.listen(port, () => {
     console.log(`Running on ${port} (LISTENER API)`);
 })
 
-export { client }
+export { client };

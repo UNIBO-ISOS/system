@@ -1,17 +1,78 @@
 import { Request, Response } from 'express';
 import { ReasonPhrases, StatusCodes } from 'http-status-codes';
-import { Order, restaurantStatus, orderStatus, courierStatus } from './order.model';
-import { myBank } from '../../util/bankWrapper';
 import { Types } from 'mongoose';
-import { wrapper } from '../../util/socketWrapper';
-import { Restaurant } from '../restaurant/restaurant.model';
-import { Courier } from '../courier/courier.model';
-import { Auction } from '../auction/auction.model';
-import { Timer } from '../../util/timer'
-import { emitter } from '../../util/emitter'
 import { roles } from '../../middleware/role';
+import { myBank } from '../../util/bankWrapper';
+import { emitter } from '../../util/emitter';
+import { wrapper } from '../../util/socketWrapper';
+import { Auction } from '../auction/auction.model';
+import { Courier } from '../courier/courier.model';
+import { Restaurant } from '../restaurant/restaurant.model';
+import { courierStatus, Order, orderStatus, restaurantStatus } from './order.model';
 
 //  TODO: decidere se dividere il metodo in 2 (uno per inoltrare la richiesta al corriere ed uno per il ristorante)
+const notifyRestaurant = async (req: Request, res: Response, next: any) => {
+    const orderId = req.params.orderId
+    const order = await Order.findById(orderId)
+    if (!order) {
+        return res.status(StatusCodes.NOT_FOUND).send(ReasonPhrases.NOT_FOUND)
+    }
+    const restaurant = await Restaurant.findById(order.restaurantId.toString())
+    if (!restaurant) {
+        return res.status(StatusCodes.NOT_FOUND).json({ error: ReasonPhrases.NOT_FOUND })
+    }
+    wrapper.emit([restaurant.user.toString()], process.env.NEW_ORDER_RESTAURANTS!, order)
+}
+
+const notifyCourier = async (req: Request, res: Response, next: any) => {
+    const orderId = req.params.orderId
+    const order = await Order.findById(orderId)
+    if (!order) {
+        return res.status(StatusCodes.NOT_FOUND).send(ReasonPhrases.NOT_FOUND)
+    }
+
+    const courierPoint = order.address.location
+    const couriers = await Courier.find({
+        $near: {
+            $geometry: courierPoint,
+            $maxDistance: parseInt(process.env.MAX_DISTANCE!)
+        }
+    })
+    if (!couriers) {
+        return res.status(StatusCodes.NOT_FOUND).json({ error: ReasonPhrases.NOT_FOUND })
+    }
+    for (const courier of couriers) {
+        wrapper.emit([courier.user.toString()], process.env.NEW_ORDER_COURIERS!, order)
+    }
+
+    emitter.addEvent(order._id.toString(), async () => {
+        //  todo: selezionare corriere dalla lista disponibile (se esiste)
+        const confirmedDeliveries = await Auction.find({
+            orderId: order._id
+        }).sort({ "amount": 1 })
+
+        if (!confirmedDeliveries || confirmedDeliveries.length == 0) {
+            return res.status(StatusCodes.NOT_FOUND).json({ error: 'no application' })
+        }
+
+        const bestOfDeliveries = confirmedDeliveries[0];
+
+        let successMsg = {
+            deliveryId: bestOfDeliveries.orderId,
+            success: true
+        }
+
+        const userCourier = await Courier.findById(bestOfDeliveries.courierId.toString())
+        if (!userCourier) {
+            return res.status(StatusCodes.NOT_FOUND).json({ error: ReasonPhrases.NOT_FOUND })
+        }
+
+        wrapper.emit([userCourier.user.toString()], process.env.WON_COURIER_AUCTION!, successMsg)
+
+        return res.status(StatusCodes.CREATED).json({ id: order._id })
+    })
+}
+
 const createNewOrder = async (req: any, res: Response, next: any) => {
     try {
         let orderRequest = req.body
@@ -25,58 +86,7 @@ const createNewOrder = async (req: any, res: Response, next: any) => {
         let orderToSave = new Order(orderRequest)
         orderToSave = await orderToSave.save()
 
-        const restaurant = await Restaurant.findById(orderToSave.restaurantId.toString())
-        if (!restaurant) {
-            return res.status(StatusCodes.NOT_FOUND).json({ error: ReasonPhrases.NOT_FOUND })
-        }
-        wrapper.emit([restaurant.user.toString()], process.env.NEW_ORDER_RESTAURANTS!, orderToSave)
-
-        // notify courier
-        const courierPoint = orderToSave.address.location
-        const couriers = await Courier.find({
-            $near: {
-                $geometry: courierPoint,
-                $maxDistance: parseInt(process.env.MAX_DISTANCE!)
-            }
-        })
-        if (!couriers) {
-            return res.status(StatusCodes.NOT_FOUND).json({ error: ReasonPhrases.NOT_FOUND })
-        }
-        for (const courier of couriers) {
-            wrapper.emit([courier.user.toString()], process.env.NEW_ORDER_COURIERS!, orderToSave)
-        }
-
-        emitter.addEvent(orderToSave._id.toString(), async () => {
-            //  todo: selezionare corriere dalla lista disponibile (se esiste)
-
-            const confirmedDeliveries = await Auction.find({
-                orderId: orderToSave._id
-            }).sort({ "amount": 1 })
-
-            if(!confirmedDeliveries || confirmedDeliveries.length == 0) {
-                return res.status(StatusCodes.NOT_FOUND).json({ error: 'no application' })
-            }
-
-            const bestOfDeliveries = confirmedDeliveries[0];
-
-            let successMsg = {
-                deliveryId: bestOfDeliveries.orderId,
-                success: true
-            }
-
-            const userCourier = await Courier.findById(bestOfDeliveries.courierId.toString())
-            if (!userCourier) {
-                return res.status(StatusCodes.NOT_FOUND).json({ error: ReasonPhrases.NOT_FOUND })
-            }
-
-            wrapper.emit([userCourier.user.toString()], process.env.WON_COURIER_AUCTION!, successMsg)
-
-            return res.status(StatusCodes.CREATED).json({ id: orderToSave._id })
-
-        })
-        let timer = new Timer(orderToSave._id.toString())
-
-        //return res.status(StatusCodes.CREATED).json({ id: orderToSave._id })
+        return res.status(StatusCodes.CREATED).json({ id: orderToSave._id })
     } catch (err) {
         return next(err)
     }
@@ -153,11 +163,11 @@ const cancelOrder = async (req: any, res: Response, next: any) => {
 
         order.status = orderStatus.CANCELED
 
-        if(req.auth.role == roles.restaurant){
+        if (req.auth.role == roles.restaurant) {
             order.restaurantStatus = restaurantStatus.REJECTED
         }
 
-        if(req.auth.role == roles.courier){
+        if (req.auth.role == roles.courier) {
             order.courierStatus = courierStatus.FAILED
         }
 
@@ -170,8 +180,8 @@ const cancelOrder = async (req: any, res: Response, next: any) => {
         if (!restaurant) {
             return res.status(StatusCodes.NOT_FOUND).json({ error: ReasonPhrases.NOT_FOUND })
         }
-        
-        if(order.courier){
+
+        if (order.courier) {
             const courier = await Courier.findById(order.courier.toString())
 
             wrapper.emit([courier!.user.toString()], process.env.CANCEL_ORDER_NOTIFICATION!, { orderId: orderId })
@@ -230,4 +240,4 @@ const acceptDelivery = async (req: any, res: Response, next: any) => {
     }
 }
 
-export { createNewOrder, notifyPayment, acceptOrder, rejectOrder, cancelOrder, acceptDelivery }
+export { createNewOrder, notifyPayment, acceptOrder, rejectOrder, cancelOrder, acceptDelivery };

@@ -1,8 +1,8 @@
 import express from 'express';
-import { acceptOrder, acceptDelivery, createNewOrder, notifyPayment, rejectOrder, cancelOrder } from './order.controller';
-import { authorize, checkOrderOwnership } from '../../middleware/authorize';
-import { roles, getAllRoles } from '../../middleware/role';
-import { checkCancelOrderDeadline } from '../../util/util'
+import { authorize } from '../../middleware/authorize';
+import { roles } from '../../middleware/role';
+import { checkCancelOrderDeadline } from '../../util/util';
+import { acceptDelivery, acceptOrder, cancelOrder, createNewOrder, notifyPayment, rejectOrder } from './order.controller';
 
 const router = express.Router();
 
@@ -13,5 +13,8 @@ router.post('/:orderId/acceptOrder', authorize(roles.normal), acceptOrder)
 router.post('/:orderId/rejectOrder', authorize(roles.normal), rejectOrder)
 router.post('/:orderId/cancelOrder', authorize(roles.normal), checkCancelOrderDeadline, cancelOrder)
 router.post('/:orderId/acceptDelivery', authorize(roles.courier), acceptDelivery)
+router.post('/:orderId/notifyRestaurant', authorize(roles.courier), acceptDelivery)
+router.post('/:orderId/notifyCourier', authorize(roles.courier), acceptDelivery)
 
-export { router }
+export { router };
+
